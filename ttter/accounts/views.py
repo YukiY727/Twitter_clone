@@ -11,7 +11,7 @@ from django.views.generic import FormView, TemplateView
 
 class UserCreateView(FormView):
     form_class = UserCreationForm
-    template_name = 'registration/create.html'
+    template_name = 'accounts/create.html'
     success_url = reverse_lazy('base:top')
 
     def form_valid(self, form):
