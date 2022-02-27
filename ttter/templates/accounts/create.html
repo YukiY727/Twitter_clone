@@ -9,7 +9,8 @@
             <h3>ユーザー作成</h3>
           </div>
           <form class="ui form" action="" method="POST">
-            {% csrf_token %} {{form.as_p}}
+            {% csrf_token %}
+            {{form.as_p}}
             <button
               class="ui orange button"
               name="next"

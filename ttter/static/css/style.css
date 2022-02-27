@@ -16,8 +16,8 @@ body {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: end;
-  -ms-flex-pack: end;
-  justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
   width: 100%;
   list-style-type: none;
   margin: 0;
@@ -56,7 +56,7 @@ body {
 
 #main .frame_accounts {
   width: 500px;
-  height: 400px;
+  height: 550px;
   display: inline-block;
   border-style: solid;
   border-color: gray;

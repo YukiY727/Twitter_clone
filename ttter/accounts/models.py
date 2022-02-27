@@ -1,6 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
 from django.core.validators import MinLengthValidator, RegexValidator
+from django.db import models
 
 
 class MyUserManager(BaseUserManager):
@@ -33,7 +34,6 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
-    BLOOD_CHOICES = [("A型", "A型"), ("B型", "B型"), ("AB型", "AB型"), ("O型", "O型")]
 
     username = models.CharField(verbose_name='username',
                                 max_length=10,
@@ -48,15 +48,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
                                 blank=False,
                                 null=False)
     date_of_birth = models.DateField(verbose_name="誕生日", blank=True, null=True)
-    blood_type = models.TextField(verbose_name="血液型",
-                                  choices=BLOOD_CHOICES,
-                                  blank=True,
-                                  null=True)
-    url = models.URLField(verbose_name='リンク', blank=True, null=True)
-    introduction = models.TextField(verbose_name='自己紹介',
-                                    max_length=300,
-                                    blank=True,
-                                    null=True)
     date_joined = models.DateTimeField(verbose_name='登録日', auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
