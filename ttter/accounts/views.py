@@ -3,43 +3,56 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import FormView, TemplateView
-
+from django.views.generic import FormView, CreateView
+from .forms import SignUpFrom
 # Create your views here.
 User = get_user_model()
 
-class SignUpFrom(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ('email','username')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-control'
+class UserDataInput(FormView):
+    """ユーザー情報の入力
 
-class UserCreateView(FormView):
-    form_class = SignUpFrom
+    このビューが呼ばれるのは、以下の2箇所です。
+    ・初回の入力欄表示(aタグでの遷移)
+    ・確認画面から戻るを押した場合(これはPOSTで飛んできます)
+
+    初回の入力欄表示の際は、空のフォームをuser_data_input.htmlに渡し、
+    戻る場合は、POSTで飛んできたフォームデータをそのままuser_data_input.htmlに渡します。
+
+    """
     template_name = 'accounts/create.html'
-    success_url = reverse_lazy('base:top')
+    form_class = SignUpFrom
 
     def form_valid(self, form):
-        if self.request.POST['next'] == 'back':
-            return render(self.request, 'accouts/create.html',
-                          {'form': form})
-        elif self.request.POST['next'] == 'confirm':
-            return render(self.request, 'accounts/create_confirm.html',
-                          {'form': form})
-        elif self.request.POST['next'] == 'regist':
-            form.save()
-            # 認証
-            user = authenticate(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password1'],
-            )
-            # ログイン
-            login(self.request, user)
-            return super().form_valid(form)
-        else:
-            # 通常このルートは通らない
-            return redirect(reverse_lazy('base:top'))
+        return render(self.request, 'accounts/create.html',
+                      {'form': form})
+
+
+class UserDataConfirm(FormView):
+    """ユーザー情報の確認
+
+    ユーザー情報入力後、「送信」を押すとこのビューが呼ばれます。(create.htmlのform action属性がこのビュー)
+    データが問題なければcreate_confirm.html(確認ページ)を、入力内容に不備があればcreate.html(入力ページ)に
+    フォームデータを渡します。
+
+    """
+    form_class = SignUpFrom
+
+    def form_valid(self, form):
+        return render(self.request, 'accounts/create_confirm.html',
+                      {'form': form})
+
+    def form_invalid(self, form):
+        return render(self.request, 'accounts/create.html',
+                      {'form': form})
+
+
+class UserDataCreate(CreateView):
+    """ユーザーデータの登録ビュー。ここ以外では、CreateViewを使わないでください"""
+    form_class = SignUpFrom
+    success_url = reverse_lazy('base:top')
+
+    def form_invalid(self, form):
+        """基本的にはここに飛んでこないはずです。UserDataConfrimでバリデーションは済んでるため"""
+        return render(self.request, 'accounts/create.html',
+                      {'form': form})

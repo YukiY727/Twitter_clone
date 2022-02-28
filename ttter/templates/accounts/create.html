@@ -1,28 +1,17 @@
 {% extends 'base/top.html' %}
 {% block content %}
-<div class="frame_accounts">
-  <div class="ui grid stackable">
-    <div class="eleven wide column">
-      <div class="ui segment">
-        <div class="content">
-          <div class="header">
-            <h3>ユーザー作成</h3>
-          </div>
-          <form class="ui form" action="" method="POST">
+    <div class="frame_accounts">
+        <form action="{% url 'accounts:create_confirm' %}" method="POST">
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
             {% csrf_token %}
-            {{form.as_p}}
-            <button
-              class="ui orange button"
-              name="next"
-              value="confirm"
-              type="submit"
-            >
-              確認
-            </button>
-          </form>
-        </div>
-      </div>
+            <button type="submit" class="btn btn-primary btn-lg">送信</button>
+        </form>
     </div>
-  </div>
-</div>
 {% endblock %}
