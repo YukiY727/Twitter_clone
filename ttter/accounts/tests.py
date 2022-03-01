@@ -1,16 +1,18 @@
 from django.test import TestCase
 # from models import MyUser
-from . import views
+from .views import UserDataInput
 from django.urls import reverse, resolve
+
 class SignUpTests(TestCase):
     def setUp(self):
-        self.url = reverse('accounts:create')
+        self.url = reverse('accounts:create_data_input')
 
     def test_signup_get(self):
         response = self.client.get(self.url)
+        view = resolve('/create_data_input/')
         # ユーザーがURL/signup/のページをGETすれば、ステータスコードは200、すなわち’成功’となる。
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(views.UserCreateView.request.POST['next'] == 'back', response)
+        self.assertEquals(view.func, UserDataInput)
 
     # def test_successful_signup_post(self):
     #     data = {
