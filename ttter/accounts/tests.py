@@ -2,6 +2,7 @@ from django.test import TestCase
 # from models import MyUser
 from .views import UserDataInput
 from django.urls import reverse, resolve
+from .models import MyUser
 
 class SignUpTests(TestCase):
     def setUp(self):
@@ -9,27 +10,28 @@ class SignUpTests(TestCase):
 
     def test_signup_get(self):
         response = self.client.get(self.url)
-        view = resolve('/create_data_input/')
         # ユーザーがURL/signup/のページをGETすれば、ステータスコードは200、すなわち’成功’となる。
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(view.func, UserDataInput)
 
-    # def test_successful_signup_post(self):
-    #     data = {
-    #         'username': 'new_user',
-    #         'password1': 'testpass1',
-    #         'password2': 'testpass1',
-    #     }
-    #     post_response = self.client.post(self.url, data=data)
-    #     mypostlist_url = reverse('')
-    #     # 'tweet:myposlist'にリダイレクトされることを確認
-    #     self.assertRedirects(post_response, mypostlist_url)
-    #     # Userオブジェクトが作成されていることを確認
-    #     self.assertTrue(MyUser.objects.exists())
-    #     # ユーザーが認証済みであることを確認
-    #     get_response = self.client.get(mypostlist_url)
-    #     user = get_response.context.get('user')
-    #     self.assertTrue(user.is_authenticated)
+    def test_successful_signup_post(self):
+        data = {
+            'username': 'new_user',
+            'password1': 'testpass1',
+            'password2': 'testpass1',
+        }
+        post_response = self.client.post(self.url, data=data)
+        self.assertEquals(post_response.status_code, 200)
+        mypostlist_url = reverse('accounts:create_confirm')
+        # 'tweet:myposlist'にリダイレクトされることを確認
+        self.assertRedirects(post_response, mypostlist_url)
+        
+
+        # Userオブジェクトが作成されていることを確認
+        # self.assertTrue(MyUser.objects.exists())
+        # ユーザーが認証済みであることを確認
+        # get_response = self.client.get(mypostlist_url)
+        # user = get_response.context.get('user')
+        # self.assertTrue(user.is_authenticated)
 
     # def test_invalid_signup_post(self):
     #     # 無効なフォームを送信すると、同じページ（'accounts:signup'）にリダイレクトする
@@ -38,8 +40,8 @@ class SignUpTests(TestCase):
     #     # エラーメッセージがあることを確認
     #     form = response.context.get('form')
     #     self.assertTrue(form.errors)
-    #     # Userオブジェクトが作成されていないことを確認
-    #     self.assertFalse(MyUser.objects.exists())
+        # Userオブジェクトが作成されていないことを確認
+        # self.assertFalse(MyUser.objects.exists())
 
     # def test_with_different_passwords(self):
     #     response = self.client.post(self.url, {'username': 'new_user', 'password1': 'testpass2', 'password2': 'testpass3'})
