@@ -3,8 +3,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import FormView, CreateView
+from django.views.generic import CreateView, FormView
+
 from .forms import SignUpFrom
+
 # Create your views here.
 User = get_user_model()
 
@@ -51,6 +53,9 @@ class UserDataCreate(CreateView):
     """ユーザーデータの登録ビュー。ここ以外では、CreateViewを使わないでください"""
     form_class = SignUpFrom
     success_url = reverse_lazy('base:top')
+
+    def from_valid(self, form):
+        return redirect(self.success_url)
 
     def form_invalid(self, form):
         """基本的にはここに飛んでこないはずです。UserDataConfrimでバリデーションは済んでるため"""

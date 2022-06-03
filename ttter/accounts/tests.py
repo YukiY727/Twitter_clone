@@ -1,12 +1,14 @@
 from django.test import TestCase
+from django.urls import resolve, reverse
+
+from .models import MyUser
 # from models import MyUser
 from .views import UserDataInput
-from django.urls import reverse, resolve
-from .models import MyUser
+
 
 class SignUpTests(TestCase):
     def setUp(self):
-        self.url = reverse('accounts:create_data_input')
+        self.url = reverse('accounts:user_data_input')
 
     def test_signup_get(self):
         response = self.client.get(self.url)
@@ -18,13 +20,31 @@ class SignUpTests(TestCase):
             'username': 'new_user',
             'password1': 'testpass1',
             'password2': 'testpass1',
+            'email': 'hogehoge.com',
+            'nickname': 'nu',
+            'date_of_birth': '2000/1/1'
         }
         post_response = self.client.post(self.url, data=data)
         self.assertEquals(post_response.status_code, 200)
-        mypostlist_url = reverse('accounts:create_confirm')
-        # 'tweet:myposlist'にリダイレクトされることを確認
-        self.assertRedirects(post_response, mypostlist_url)
-        
+        self.assertTemplateUsed(post_response, 'accounts/create.html')
+
+
+class UserDataConfirmTests(TestCase):
+    def setUp(self):
+        self.url = reverse('accounts:user_data_confirm')
+
+    def test_create_confirm(self):
+        data = {
+            'username': 'new_user',
+            'password1': 'testpass1',
+            'password2': 'testpass1',
+            'email': 'hogehoge.com',
+            'nickname': 'nu',
+            'date_of_birth': '2000/1/1'
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'accounts/create.html')
 
         # Userオブジェクトが作成されていることを確認
         # self.assertTrue(MyUser.objects.exists())
