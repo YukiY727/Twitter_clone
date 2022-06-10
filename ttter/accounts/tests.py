@@ -1,14 +1,8 @@
-from urllib import response
-
 from django.test import TestCase
-from django.urls import resolve, reverse
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 
-from .models import MyUser
-# from models import MyUser
-from .views import UserDataInput
 User = get_user_model()
-
 
 class SignUpTests(TestCase):
     def setUp(self):
