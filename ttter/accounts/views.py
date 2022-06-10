@@ -55,7 +55,13 @@ class UserDataCreate(CreateView):
     success_url = reverse_lazy('base:top')
 
     def from_valid(self, form):
-        return redirect(self.success_url)
+        form.save()
+        email = form.cleaned_data.get('email')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            login(self.request, user)
+            return super().form_valid(form)
 
     def form_invalid(self, form):
         """基本的にはここに飛んでこないはずです。UserDataConfrimでバリデーションは済んでるため"""

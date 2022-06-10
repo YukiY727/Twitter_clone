@@ -45,7 +45,14 @@ class UserDataConfirmTests(TestCase):
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'accounts/create.html')
-
+        self.assertContains(response, 'new_user')
+        self.assertContains(response, 'testpass1')
+        self.assertContains(response, 'testpass1')
+        self.assertContains(response, 'hogehoge.com')
+        self.assertContains(response, 'nu')
+        self.assertContains(response, '2000/1/1')
+        base_url = reverse('base:top')
+        self.assertRedirects(response, base_url)
         # Userオブジェクトが作成されていることを確認
         # self.assertTrue(MyUser.objects.exists())
         # ユーザーが認証済みであることを確認
