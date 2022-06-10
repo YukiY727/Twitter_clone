@@ -18,9 +18,9 @@ class SignUpTests(TestCase):
             'username': 'new_user',
             'password1': 'testpass1',
             'password2': 'testpass1',
-            'email': 'hogehoge.com',
+            'email': 'newuser@mail.com',
             'nickname': 'nu',
-            'date_of_birth': '2000/1/1'
+            'date_of_birth': '2000-1-1'
         }
         post_response = self.client.post(self.url, data=data)
         self.assertEquals(post_response.status_code, 200)
@@ -33,31 +33,31 @@ class UserDataConfirmTests(TestCase):
 
     def test_data_confirm(self):
         data = {
-            'username': 'new_user',
+            'username': 'newuser',
             'password1': 'testpass1',
             'password2': 'testpass1',
-            'email': 'hogehoge.com',
+            'email': 'newuser@mail.com',
             'nickname': 'nu',
-            'date_of_birth': '2000/1/1'
+            'date_of_birth': '2000-01-01',
         }
         confirm_response = self.client.post(self.url, data=data)
         self.assertEqual(confirm_response.status_code, 200)
-        self.assertTemplateUsed(confirm_response, 'accounts/create.html')
-        self.assertContains(confirm_response, 'new_user')
+        self.assertTemplateUsed(confirm_response, 'accounts/create_confirm.html')
+        self.assertContains(confirm_response, 'newuser')
         self.assertContains(confirm_response, 'testpass1')
         self.assertContains(confirm_response, 'testpass1')
-        self.assertContains(confirm_response, 'hogehoge.com')
+        self.assertContains(confirm_response, 'newuser@mail.com')
         self.assertContains(confirm_response, 'nu')
-        self.assertContains(confirm_response, '2000/1/1')
+        self.assertContains(confirm_response, '2000-01-01')
 
     def test_data_create(self):
         data = {
-            'username': 'new_user',
+            'username': 'newuser',
             'password1': 'testpass1',
             'password2': 'testpass1',
-            'email': 'hogehoge.com',
+            'email': 'newuser@mail.com',
             'nickname': 'nu',
-            'date_of_birth': '2000/1/1'
+            'date_of_birth': '2000-1-1'
         }
         create_response = self.client.post(reverse('accounts:user_data_create'), data)
         self.assertTrue(User.objects.exists())
