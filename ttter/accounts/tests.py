@@ -1,9 +1,13 @@
+from urllib import response
+
 from django.test import TestCase
 from django.urls import resolve, reverse
+from django.contrib.auth import get_user_model
 
 from .models import MyUser
 # from models import MyUser
 from .views import UserDataInput
+User = get_user_model()
 
 
 class SignUpTests(TestCase):
@@ -33,7 +37,7 @@ class UserDataConfirmTests(TestCase):
     def setUp(self):
         self.url = reverse('accounts:user_data_confirm')
 
-    def test_create_confirm(self):
+    def test_data_confirm(self):
         data = {
             'username': 'new_user',
             'password1': 'testpass1',
@@ -42,17 +46,29 @@ class UserDataConfirmTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2000/1/1'
         }
-        response = self.client.post(self.url, data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'accounts/create.html')
-        self.assertContains(response, 'new_user')
-        self.assertContains(response, 'testpass1')
-        self.assertContains(response, 'testpass1')
-        self.assertContains(response, 'hogehoge.com')
-        self.assertContains(response, 'nu')
-        self.assertContains(response, '2000/1/1')
+        confirm_response = self.client.post(self.url, data=data)
+        self.assertEqual(confirm_response.status_code, 200)
+        self.assertTemplateUsed(confirm_response, 'accounts/create.html')
+        self.assertContains(confirm_response, 'new_user')
+        self.assertContains(confirm_response, 'testpass1')
+        self.assertContains(confirm_response, 'testpass1')
+        self.assertContains(confirm_response, 'hogehoge.com')
+        self.assertContains(confirm_response, 'nu')
+        self.assertContains(confirm_response, '2000/1/1')
+
+    def test_data_create(self):
+        data = {
+            'username': 'new_user',
+            'password1': 'testpass1',
+            'password2': 'testpass1',
+            'email': 'hogehoge.com',
+            'nickname': 'nu',
+            'date_of_birth': '2000/1/1'
+        }
+        create_response = self.client.post(reverse('accounts:user_data_create'), data)
+        self.assertTrue(User.objects.exists())
         base_url = reverse('base:top')
-        self.assertRedirects(response, base_url)
+        self.assertRedirects(create_response, base_url)
         # Userオブジェクトが作成されていることを確認
         # self.assertTrue(MyUser.objects.exists())
         # ユーザーが認証済みであることを確認
