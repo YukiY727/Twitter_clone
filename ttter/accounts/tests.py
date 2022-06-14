@@ -55,7 +55,8 @@ class SignUpTests(TestCase):
             'nickname': '',
             'date_of_birth': '',
         }
-        empty_data_response = self.client.post(self.url_confirm, data=empty_data)
+        empty_data_response = self.client.post(
+            self.url_confirm, data=empty_data)
         self.assertEqual(empty_data_response.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertFormError(empty_data_response, 'form',
@@ -78,7 +79,8 @@ class SignUpTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2000-01-01',
         }
-        empty_name_response = self.client.post(self.url_confirm, data=empty_username)
+        empty_name_response = self.client.post(
+            self.url_confirm, data=empty_username)
         self.assertEqual(empty_name_response.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertFormError(empty_name_response, 'form',
@@ -93,7 +95,8 @@ class SignUpTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2000-01-01',
         }
-        short_password_response = self.client.post(self.url_confirm, data=short_password)
+        short_password_response = self.client.post(
+            self.url_confirm, data=short_password)
         self.assertEqual(short_password_response.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertFormError(short_password_response, 'form',
@@ -108,7 +111,8 @@ class SignUpTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2000-01-01',
         }
-        false_email_response = self.client.post(self.url_confirm, data=false_email)
+        false_email_response = self.client.post(
+            self.url_confirm, data=false_email)
         self.assertEqual(false_email_response.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertFormError(false_email_response, 'form',
@@ -123,7 +127,8 @@ class SignUpTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2000-01-01',
         }
-        different_password_response = self.client.post(self.url_confirm, data=different_password)
+        different_password_response = self.client.post(
+            self.url_confirm, data=different_password)
         self.assertEqual(different_password_response.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertFormError(different_password_response,
@@ -138,14 +143,15 @@ class SignUpTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2-01-01',
         }
-        false_datebirth_response = self.client.post(self.url_confirm, data=different_password)
+        false_datebirth_response = self.client.post(
+            self.url_confirm, data=different_password)
         self.assertEqual(false_datebirth_response.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertFormError(false_datebirth_response,
                              'form', 'date_of_birth', '日付を正しく入力してください。')
 
     def test_duplicate_user(self):
-        data1 = {
+        data = {
             'username': 'newuser',
             'password1': 'testpass1',
             'password2': 'testpass1',
@@ -153,51 +159,44 @@ class SignUpTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2000-01-01',
         }
-        data2 = {
-            'username': 'newuser',
-            'password1': 'testpass1',
-            'password2': 'testpass1',
-            'email': 'newuser@mail.com',
-            'nickname': 'nu',
-            'date_of_birth': '2000-01-01',
-        }
-        self.client.post(self.url_confirm, data=data1)
-        data2_response = self.client.post(self.url_confirm, data=data2)
+        User.objects.create_user(
+            username="newuser", email="newuser@mail.com", password="testpass1")
+        data2_response = self.client.post(self.url_confirm, data=data)
         self.assertEqual(data2_response.status_code, 200)
-        error_message = data2_response.context.get('form')
+        self.assertFormError(data2_response,
+                             'form', 'username', 'この Username を持った My user が既に存在します。')
+        self.assertFormError(data2_response,
+                             'form', 'email', 'この Email を持った My user が既に存在します。')
+
+    def test_simple_password(self):
+        simple_password_data = {
+            'username': 'newuser',
+            'password1': 'abcdefgh',
+            'password2': 'abcdefgh',
+            'email': 'newuser@mail.com',
+            'nickname': 'nu',
+            'date_of_birth': '2000-01-01',
+        }
+        simple_password_response = self.client.post(
+            self.url_confirm, data=simple_password_data)
+        self.assertEqual(simple_password_response.status_code, 200)
+        self.assertFormError(simple_password_response,
+                             'form', 'password2', 'このパスワードは一般的すぎます。')
+        error_message = simple_password_response.context.get('form')
         print(error_message.errors)
         self.assertFalse(User.objects.exists())
-        # self.assertFormError(data2_response, 'form', 'username', '同じユーザー名が既に登録済みです。')
-        # Userオブジェクトが作成されていることを確認
-        # self.assertTrue(MyUser.objects.exists())
-        # ユーザーが認証済みであることを確認
-        # get_response = self.client.get(mypostlist_url)
-        # user = get_response.context.get('user')
-        # self.assertTrue(user.is_authenticated)
 
-    # def test_invalid_signup_post(self):
-    #     # 無効なフォームを送信すると、同じページ（'accounts:signup'）にリダイレクトする
-    #     response = self.client.post(self.url, {})
-    #     self.assertEquals(response.status_code, 200)
-    #     # エラーメッセージがあることを確認
-    #     form = response.context.get('form')
-    #     self.assertTrue(form.errors)
-        # Userオブジェクトが作成されていないことを確認
-        # self.assertFalse(MyUser.objects.exists())
-
-    # def test_with_different_passwords(self):
-    #     response = self.client.post(self.url, {'username': 'new_user', 'password1': 'testpass2', 'password2': 'testpass3'})
-    #     self.assertFormError(response, 'form', 'password2', '確認用パスワードが一致しません。')
-
-    # def test_with_short_passwords(self):
-    #     response = self.client.post(self.url, {'username': 'new_user', 'password1': 'fghj39', 'password2': 'fghj39'})
-    #     self.assertFormError(response, 'form', 'password2','このパスワードは短すぎます。最低 8 文字以上必要です。')
-
-    # def test_with_easily_passwords(self):
-    #     response = self.client.post(self.url, {'username': 'new_user', 'password1': 'abcd1234', 'password2': 'abcd1234'})
-    #     self.assertFormError(response, 'form', 'password2','このパスワードは一般的すぎます。')
-
-    # def test_with_existed_user(self):
-    #     MyUser.objects.create_user('existing_user', '', 'testpass1')
-    #     response = self.client.post(self.url, {'username': 'existing_user', 'password1': 'testpass1', 'password2': 'testpass1'})
-    #     self.assertFormError(response, 'form', 'username','同じユーザー名が既に登録済みです。')
+    def test_short_password(self):
+        short_password_data = {
+            'username': 'newuser',
+            'password1': 'fg',
+            'password2': 'fg',
+            'email': 'newuser@mail.com',
+            'nickname': 'nu',
+            'date_of_birth': '2000-01-01',
+        }
+        short_password_response = self.client.post(
+            self.url_confirm, data=short_password_data)
+        self.assertEqual(short_password_response.status_code, 200)
+        self.assertFormError(short_password_response, 'form',
+                             'password2', 'このパスワードは短すぎます。最低 8 文字以上必要です。')
