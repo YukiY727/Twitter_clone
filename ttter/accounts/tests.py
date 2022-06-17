@@ -57,6 +57,7 @@ class SignUpTests(TestCase):
         }
         empty_data_response = self.client.post(
             self.url_confirm, data=empty_data)
+        self.assertTemplateUsed(empty_data_response, 'accounts/create.html')
         self.assertEqual(empty_data_response.status_code, 200)
         self.assertFalse(User.objects.exists())
         self.assertFormError(empty_data_response, 'form',
@@ -150,7 +151,7 @@ class SignUpTests(TestCase):
         self.assertFormError(false_datebirth_response,
                              'form', 'date_of_birth', '日付を正しく入力してください。')
 
-    def test_duplicate_user(self):
+    def test_duplicate_username_and_email(self):
         data = {
             'username': 'newuser',
             'password1': 'testpass1',
