@@ -186,18 +186,3 @@ class SignUpTests(TestCase):
         error_message = simple_password_response.context.get('form')
         print(error_message.errors)
         self.assertFalse(User.objects.exists())
-
-    def test_short_password(self):
-        short_password_data = {
-            'username': 'newuser',
-            'password1': 'fg',
-            'password2': 'fg',
-            'email': 'newuser@mail.com',
-            'nickname': 'nu',
-            'date_of_birth': '2000-01-01',
-        }
-        short_password_response = self.client.post(
-            self.url_confirm, data=short_password_data)
-        self.assertEqual(short_password_response.status_code, 200)
-        self.assertFormError(short_password_response, 'form',
-                             'password2', 'このパスワードは短すぎます。最低 8 文字以上必要です。')
