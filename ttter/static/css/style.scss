@@ -15,9 +15,9 @@ body {
         display: -webkit-flex;
         display: flex;
         justify-content: flex-end;
-        width: 100%;
+        width: 20%;
+        margin-left: 70%;
         list-style-type: none;
-        margin: 0;
         padding: 0;
         position: absolute;
 
@@ -60,7 +60,6 @@ body {
         border-style: solid;
         border-color: gray;
         border-radius: 10px;
-
     }
 
 }
