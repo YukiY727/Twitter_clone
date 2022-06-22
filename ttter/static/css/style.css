@@ -1,0 +1,65 @@
+body {
+  height: 100vh;
+  margin: 20px;
+  text-align: center;
+}
+
+#title {
+  font-family: 'Londrina Shadow', cursive;
+  font-size: 3em;
+  margin: 8px;
+  position: relative;
+}
+
+#title .right_menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  width: 20%;
+  margin-left: 70%;
+  list-style-type: none;
+  padding: 0;
+  position: absolute;
+}
+
+#title .right_menu a {
+  font-family: CURSIVE;
+  margin: 24px 32px 24px 32px;
+  font-size: 25px;
+}
+
+#main {
+  display: block;
+  height: 100%;
+  text-align: center;
+}
+
+#main .menu_container {
+  left: 10%;
+  top: 100px;
+  width: 200px;
+  position: fixed;
+}
+
+#main .menu_container li {
+  font-family: CURSIVE;
+  list-style: none;
+  margin: 24px 24px;
+  font-size: 1.5em;
+  display: inline-block;
+  width: 80px;
+  height: 30px;
+}
+
+#main .frame_accounts {
+  width: 500px;
+  height: 550px;
+  display: inline-block;
+  border-style: solid;
+  border-color: gray;
+  border-radius: 10px;
+}
+/*# sourceMappingURL=style.css.map */
