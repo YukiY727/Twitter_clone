@@ -183,6 +183,4 @@ class SignUpTests(TestCase):
         self.assertEqual(simple_password_response.status_code, 200)
         self.assertFormError(simple_password_response,
                              'form', 'password2', 'このパスワードは一般的すぎます。')
-        error_message = simple_password_response.context.get('form')
-        print(error_message.errors)
         self.assertFalse(User.objects.exists())
