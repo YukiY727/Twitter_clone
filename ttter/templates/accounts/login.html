@@ -1,0 +1,9 @@
+{% extends 'base/top.html' %}
+{% block content %}
+    <h3>ログイン</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">ログイン</button>
+    </form>
+{% endblock %}

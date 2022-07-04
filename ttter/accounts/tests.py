@@ -184,3 +184,23 @@ class SignUpTests(TestCase):
         self.assertFormError(simple_password_response,
                              'form', 'password2', 'このパスワードは一般的すぎます。')
         self.assertFalse(User.objects.exists())
+
+class TestLoginView(TestCase):
+
+    def setUp(self):
+        User.objects.create(username='test', email='test@ed.jp', nickname='testtest', password='t12e12s12t', date_of_birth='2000-1-1')
+        self.url = reverse('accounts:login')
+    
+    def test_success_get(self):
+        response_get = self.client.get(self.url)
+        self.assertEqual(response_get.status_code, 200)
+        self.assertTemplateUsed(response_get, 'accounts/login.html')
+
+    def test_success_post(self):
+        data = {
+            'email':'test@ed.jp',
+            'password': 't12e12s12t'
+        }
+        response_post = self.client.post(self.url, data)
+        print(response_post)
+        self.assertRedirects(response_post, reverse('base:top'))
