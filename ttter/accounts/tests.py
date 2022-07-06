@@ -191,7 +191,6 @@ class TestLoginView(TestCase):
     def setUp(self):
         User.objects.create_user(
             username='test', email='test@ed.jp', password='t12e12s12t')
-        print(User.is_active)
         self.url = reverse('accounts:login')
 
     def test_success_get(self):
@@ -201,9 +200,11 @@ class TestLoginView(TestCase):
 
     def test_success_post(self):
         data = {
+            'username': 'test',
             'email': 'test@ed.jp',
             'password': 't12e12s12t'
         }
-        response_post = self.client.post(self.url, data)
+        response_post = self.client.post(self.url, data=data)
+        print(response_post.context["form"])
         # print(response_post)
         self.assertRedirects(response_post, reverse('base:top'))
