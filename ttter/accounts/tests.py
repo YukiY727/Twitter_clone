@@ -160,8 +160,9 @@ class SignUpTests(TestCase):
             'nickname': 'nu',
             'date_of_birth': '2000-01-01',
         }
-        User.objects.create_user(
+        a = User.objects.create_user(
             username="newuser", email="newuser@mail.com", password="testpass1")
+        print(a.get_username())
         data2_response = self.client.post(self.url_confirm, data=data)
         self.assertEqual(data2_response.status_code, 200)
         self.assertFormError(data2_response,
@@ -189,8 +190,9 @@ class SignUpTests(TestCase):
 class TestLoginView(TestCase):
 
     def setUp(self):
-        User.objects.create_user(
+        a = User.objects.create_user(
             username='test', email='test@ed.jp', password='t12e12s12t')
+        print(a.get_username())
         self.url = reverse('accounts:login')
 
     def test_success_get(self):
@@ -200,11 +202,8 @@ class TestLoginView(TestCase):
 
     def test_success_post(self):
         data = {
-            'username': 'test',
-            'email': 'test@ed.jp',
+            'username': 'test@ed.jp',
             'password': 't12e12s12t'
         }
         response_post = self.client.post(self.url, data=data)
-        print(response_post.context["form"])
-        # print(response_post)
         self.assertRedirects(response_post, reverse('base:top'))
