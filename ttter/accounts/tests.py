@@ -221,3 +221,26 @@ class TestLoginView(TestCase):
         response_post = self.client.post(self.url, data=data)
         self.assertEquals(response_post.status_code, 200)
         self.assertFormError(response_post, "form", "password", "このフィールドは必須です。")
+
+
+class TestLogoutView(TestCase):
+    def setUp(self):
+        data = {
+            "username": "newuser",
+            "password1": "abcdefgh",
+            "password2": "abcdefgh",
+            "email": "newuser@mail.com",
+            "nickname": "nu",
+            "date_of_birth": "2000-01-01",
+        }
+        self.client.post(reverse("accounts:user_data_create"), data)
+
+    def test_success_logout(self):
+        response = self.client.get(reverse("accounts:logout"))
+
+        self.assertRedirects(
+            response,
+            reverse("base:top"),
+            status_code=302,
+            target_status_code=200,
+        )
