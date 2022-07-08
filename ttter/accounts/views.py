@@ -1,8 +1,7 @@
 from django.contrib.auth import authenticate, get_user_model, login
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView, TemplateView
+from django.views.generic import CreateView, FormView
 
 from .forms import SignUpFrom
 
@@ -32,7 +31,7 @@ class UserDataCreate(CreateView):
     form_class = SignUpFrom
     success_url = reverse_lazy("base:top")
 
-    def from_valid(self, form):
+    def form_valid(self, form):
         form.save()
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password1")

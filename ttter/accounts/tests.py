@@ -1,6 +1,8 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import SESSION_KEY, get_user_model
 from django.test import TestCase
 from django.urls import reverse
+
+from ttter import settings
 
 User = get_user_model()
 
@@ -203,7 +205,8 @@ class TestLoginView(TestCase):
     def test_success_post(self):
         data = {"username": "test@ed.jp", "password": "t12e12s12t"}
         response_post = self.client.post(self.url, data=data)
-        self.assertRedirects(response_post, reverse("base:top"))
+        self.assertRedirects(response_post, reverse(settings.LOGIN_REDIRECT_URL))
+        self.assertIn(SESSION_KEY, self.client.session)
 
     def test_failure_post_with_not_exists_user(self):
         data_not_exist = {"username": "ないよーが内容", "password": "アルミ缶のうえにあるみかん"}
@@ -215,20 +218,22 @@ class TestLoginView(TestCase):
             "",
             "正しいEmailとパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。",
         )
+        self.assertNotIn(SESSION_KEY, self.client.session)
 
     def test_failure_post_with_empty_password(self):
         data = {"username": "test@ed.jp", "password": ""}
         response_post = self.client.post(self.url, data=data)
         self.assertEquals(response_post.status_code, 200)
         self.assertFormError(response_post, "form", "password", "このフィールドは必須です。")
+        self.assertNotIn(SESSION_KEY, self.client.session)
 
 
 class TestLogoutView(TestCase):
     def setUp(self):
         data = {
             "username": "newuser",
-            "password1": "abcdefgh",
-            "password2": "abcdefgh",
+            "password1": "testpass1",
+            "password2": "testpass1",
             "email": "newuser@mail.com",
             "nickname": "nu",
             "date_of_birth": "2000-01-01",
@@ -237,10 +242,10 @@ class TestLogoutView(TestCase):
 
     def test_success_logout(self):
         response = self.client.get(reverse("accounts:logout"))
-
+        self.assertNotIn(SESSION_KEY, self.client.session)
         self.assertRedirects(
             response,
-            reverse("base:top"),
+            reverse(settings.LOGOUT_REDIRECT_URL),
             status_code=302,
             target_status_code=200,
         )
