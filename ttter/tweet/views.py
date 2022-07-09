@@ -2,10 +2,10 @@ from django.urls import reverse_lazy
 
 from .forms import TweetForm
 from .models import Tweet
-
+from django.views.generic import CreateView, ListView
 
 class TweetCreateView(CreateView):
-    template_name = 'tweet:tweet_create.html'
+    template_name = 'tweet/tweet_create.html'
     form_class = TweetForm
     success_url = reverse_lazy('base:top')
 
@@ -15,5 +15,5 @@ class TweetCreateView(CreateView):
 
 
 class TweetListView(ListView):
-    template_name = 'tweet:tweet_list.html'
+    template_name = 'tweet/tweet_list.html'
     model = Tweet
