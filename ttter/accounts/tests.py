@@ -1,5 +1,5 @@
 from django.contrib.auth import SESSION_KEY, get_user_model
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from ttter import settings
@@ -233,9 +233,11 @@ class TestLogoutView(TestCase):
         User.objects.create_user(
             username="test", email="test@ed.jp", password="t12e12s12t"
         )
+        self.client.login()
 
     def test_success_logout(self):
         response = self.client.get(reverse("accounts:logout"))
+        
         self.assertNotIn(SESSION_KEY, self.client.session)
         self.assertRedirects(
             response,
