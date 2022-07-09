@@ -54,11 +54,11 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
-    #AbstractBaseUserにはMyUserManagerが必要
+    # AbstractBaseUserにはMyUserManagerが必要
     objects = MyUserManager()
-    #一意の識別子として使用されます
+    # 一意の識別子として使用されます
     USERNAME_FIELD = 'email'
-    #ユーザーを作成するときにプロンプ​​トに表示されるフィールド名のリストです。
+    # ユーザーを作成するときにプロンプ​​トに表示されるフィールド名のリストです。
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
