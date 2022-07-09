@@ -1,0 +1,10 @@
+{% extends 'base/top.html' %}
+{% block content %}
+{% for diary in diary_list %}
+<p>
+    {{ diary.date }}
+    <a href="{% url 'tweet:tweet_detail' tweet.pk %}">{{ tweet.title }}</a>
+</p>
+{% endfor %}
+<a href="{% url 'base:top' %}">戻る</a>
+{% endblock %}

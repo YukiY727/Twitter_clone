@@ -34,6 +34,8 @@
       </div>
       <div class="content">{% block content %} {% endblock content %}</div>
     </div>
+    <h2><a href="{% url 'tweet:tweet_create' %}">Tweet</a></h2>
+    <h2><a href="{% url 'tweet:tweet_list' %}">Tweet一覧</a></h2>
     <script type="js" src="{% static 'js/'}"></script>
   </body>
 </html>
