@@ -233,11 +233,10 @@ class TestLogoutView(TestCase):
         User.objects.create_user(
             username="test", email="test@ed.jp", password="t12e12s12t"
         )
-        self.client.login()
+        self.client.login(username="test", password="t12e12s12t")
 
     def test_success_logout(self):
         response = self.client.get(reverse("accounts:logout"))
-        
         self.assertNotIn(SESSION_KEY, self.client.session)
         self.assertRedirects(
             response,
