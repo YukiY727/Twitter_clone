@@ -195,7 +195,7 @@ class TestLoginView(TestCase):
         User.objects.create_user(
             username="test", email="test@ed.jp", password="t12e12s12t"
         )
-        self.url = reverse("accounts:login")
+        self.url = reverse(settings.LOGIN_URL)
 
     def test_success_get(self):
         response_get = self.client.get(self.url)
@@ -230,15 +230,9 @@ class TestLoginView(TestCase):
 
 class TestLogoutView(TestCase):
     def setUp(self):
-        data = {
-            "username": "newuser",
-            "password1": "testpass1",
-            "password2": "testpass1",
-            "email": "newuser@mail.com",
-            "nickname": "nu",
-            "date_of_birth": "2000-01-01",
-        }
-        self.client.post(reverse("accounts:user_data_create"), data)
+        User.objects.create_user(
+            username="test", email="test@ed.jp", password="t12e12s12t"
+        )
 
     def test_success_logout(self):
         response = self.client.get(reverse("accounts:logout"))
