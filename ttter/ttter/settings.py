@@ -131,5 +131,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.MyUser"
 
 LOGIN_URL = "accounts:login"
-LOGIN_REDIRECT_URL = "base:top"
+LOGIN_REDIRECT_URL = "tweet:home"
 LOGOUT_REDIRECT_URL = "base:top"

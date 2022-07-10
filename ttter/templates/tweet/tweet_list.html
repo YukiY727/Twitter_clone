@@ -1,10 +1,12 @@
 {% extends 'base/top.html' %}
 {% block content %}
-{% for diary in diary_list %}
-<p>
-    {{ diary.date }}
-    <a href="{% url 'tweet:tweet_detail' tweet.pk %}">{{ tweet.title }}</a>
-</p>
+{% for tweet in tweet_list %}
+<div class="frame_tweet">
+    <p>
+        <p>{{ tweet.created_at }}</p>
+        <a href="{% url 'tweet:tweet_detail' tweet.pk %}">{{ tweet.content }}</a>
+        <p><a href="{% url 'tweet:tweet_delete' tweet.pk %}">削除</a></p>
+    </p>
+</div>
 {% endfor %}
-<a href="{% url 'base:top' %}">戻る</a>
 {% endblock %}

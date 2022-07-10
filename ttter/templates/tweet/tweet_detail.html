@@ -1,0 +1,6 @@
+{% extends 'base/top.html' %}
+{% block content %}
+<p>{{ tweet.created_at }}</p>
+<p>{{ tweet.content }}</p>
+<p><a href="{% url 'tweet:tweet_delete' tweet.pk %}">削除</a></p>
+{% endblock %}
