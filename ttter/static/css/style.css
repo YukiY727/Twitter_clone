@@ -62,4 +62,13 @@ body {
   border-color: gray;
   border-radius: 10px;
 }
+
+#main .frame_tweet {
+  width: 500px;
+  height: 300px;
+  display: inline-block;
+  border-style: solid;
+  border-color: gray;
+  border-radius: 10px;
+}
 /*# sourceMappingURL=style.css.map */

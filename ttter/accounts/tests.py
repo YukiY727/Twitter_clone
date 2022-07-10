@@ -1,5 +1,5 @@
 from django.contrib.auth import SESSION_KEY, get_user_model
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
 
 from ttter import settings
@@ -44,7 +44,7 @@ class SignUpTests(TestCase):
     def test_data_create(self):
         create_response = self.client.post(self.url_create, self.data)
         self.assertTrue(User.objects.exists())
-        base_url = reverse("base:top")
+        base_url = reverse("tweet:home")
         self.assertRedirects(create_response, base_url)
 
     def test_empty_data(self):

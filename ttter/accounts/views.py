@@ -29,16 +29,13 @@ class UserDataConfirm(FormView):
 
 class UserDataCreate(CreateView):
     form_class = SignUpFrom
-    success_url = reverse_lazy("base:top")
+    success_url = reverse_lazy("tweet:home")
 
     def form_valid(self, form):
-        form.save()
-        email = form.cleaned_data.get("email")
-        password = form.cleaned_data.get("password1")
-        user = authenticate(email=email, password=password)
-        if user is not None:
-            login(self.request, user)
-            return super().form_valid(form)
+        response = super().form_valid(form)
+        user = self.object
+        login(self.request, user)
+        return response
 
     def form_invalid(self, form):
         return render(self.request, "accounts/create.html", {"form": form})

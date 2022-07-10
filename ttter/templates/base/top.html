@@ -28,9 +28,8 @@
     </div>
     <div id="main">
       <div class="menu_container">
-        <li href="{% url 'base:top' %}">Home</li>
-        <li>Message</li>
-        <li>List</li>
+        <li><a href="{% url 'tweet:home' %}">Home</a></li>
+        <li><a href="{% url 'tweet:tweet_create' %}">Tweet</a></li>
       </div>
       <div class="content">{% block content %} {% endblock content %}</div>
     </div>
