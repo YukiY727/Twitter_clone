@@ -33,9 +33,5 @@ class TweetDeleteViwe(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy("tweet:home")
 
     def test_func(self):
-        if Tweet.objects.filter(pk=self.kwargs["pk"]).exists():
-            current_user = self.request.user
-            tweet_user = Tweet.objects.get(pk=self.kwargs["pk"]).user
-            return current_user == tweet_user
-        else:
-            return Http404
+        self.object = self.get_object()
+        return self.object.user == self.request.user
