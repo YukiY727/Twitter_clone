@@ -1,0 +1,12 @@
+{% extends 'base/top.html' %}
+{% block content %}
+<h2>Userlist</h2>
+{% for item in object_list %}
+    {%if user.username != item.username %}
+    <li>
+        <a href="{% url 'accounts:user_page' item.id %} ">{{ item.username }}</a>
+        
+    <li>
+    {%endif%}
+{% endfor %}
+{% endblock %}

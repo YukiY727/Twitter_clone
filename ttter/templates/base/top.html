@@ -18,18 +18,19 @@
       <h1>TTTer</h1>
       <div class="right_menu">
         {% if user.is_authenticated %}
-        <a>user info</a>
+        <a href="{% url 'accounts:user_page'  request.user.id %}">user info</a>
         <a href="{% url 'accounts:logout' %}">Log out</a>
         {% else %}
         <a href="{% url 'accounts:login' %}">Log in</a>
         <a href="{% url 'accounts:user_data_input' %}">Sign up</a>
-        {% endif %}
+        {% endif %}        
       </div>
     </div>
     <div id="main">
       <div class="menu_container">
         <li><a href="{% url 'tweet:home' %}">Home</a></li>
         <li><a href="{% url 'tweet:tweet_create' %}">Tweet</a></li>
+        <li><a href="{% url 'accounts:userlist' %}">UserList</a></li>
       </div>
       <div class="content">{% block content %} {% endblock content %}</div>
     </div>

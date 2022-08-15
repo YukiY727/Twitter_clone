@@ -70,3 +70,19 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class FriendShip(models.Model):
+    followee = models.ForeignKey(
+        MyUser, related_name="followee", on_delete=models.CASCADE
+    )
+    follower = models.ForeignKey(
+        MyUser, related_name="follower", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["followee", "follower"], name="follow_unique"
+            ),
+        ]

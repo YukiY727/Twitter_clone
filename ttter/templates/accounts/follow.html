@@ -1,0 +1,16 @@
+{% extends "base/top.html" %}
+{% block content %}
+<h2>フォローの確認</h2>
+{% if messages %}
+{% for message in messages %}
+    <li>{{ message.tags }}:{{ message }}</li>
+    {% endfor %}
+{% else %}
+    <h6>{{ follower.username }}をフォローしますか？</h6>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="フォローする" class="btn" />
+    </form>
+{% endif %}
+{% endblock %}

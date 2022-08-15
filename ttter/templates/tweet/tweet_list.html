@@ -1,15 +1,19 @@
 {% extends 'base/top.html' %}
 {% block content %}
 {% for tweet in tweet_list %}
+<p>
 <div class="frame_tweet">
-    <p>
-        <p>{{ tweet.user }}</p>
-        <p>{{ tweet.created_at }}</p>
-        <a href="{% url 'tweet:tweet_detail' tweet.pk %}">{{ tweet.content }}</a>
-        {% if user == tweet.user %}
-        <p><a href="{% url 'tweet:tweet_delete' tweet.pk %}">削除</a></p>
-        {% endif %}
-    </p>
+    <div>
+        <p>
+            <p>{{ tweet.user }}</p>
+            <p>{{ tweet.created_at }}</p>
+            <a href="{% url 'tweet:tweet_detail' tweet.pk %}">{{ tweet.content }}</a>
+            {% if user == tweet.user %}
+            <p><a href="{% url 'tweet:tweet_delete' tweet.pk %}">削除</a></p>
+            {% endif %}
+        </p>
+    </div>
 </div>
+</p>
 {% endfor %}
 {% endblock %}
