@@ -61,6 +61,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
+    followees = models.ManyToManyField(
+        'MyUser', verbose_name='フォロー中のユーザー', through='FriendShip',
+        related_name='+', through_fields=('follower', 'followee')
+    )
+    followers = models.ManyToManyField(
+        'MyUser', verbose_name='フォローされているユーザー', through='FriendShip', 
+        related_name='+', through_fields=('followee', 'follower')
+    )
     # AbstractBaseUserにはMyUserManagerが必要
     objects = MyUserManager()
     # 一意の識別子として使用されます

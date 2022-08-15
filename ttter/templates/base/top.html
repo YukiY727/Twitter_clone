@@ -18,7 +18,7 @@
       <h1>TTTer</h1>
       <div class="right_menu">
         {% if user.is_authenticated %}
-        <a href="{% url 'accounts:user_page'  request.user.id %}">user info</a>
+        <a href="{% url 'accounts:user_page'  request.user.username %}">user info</a>
         <a href="{% url 'accounts:logout' %}">Log out</a>
         {% else %}
         <a href="{% url 'accounts:login' %}">Log in</a>

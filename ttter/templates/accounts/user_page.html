@@ -1,16 +1,18 @@
 {% extends 'base/top.html' %}
 {% block content %}
-{% if is_followed is True %}
-<p>
-<a href="{% url 'accounts:unfollow' user.id %}">followをはずす</a>
-</p>
-{% else %}
-<p>
-<a href="{% url 'accounts:follow' user.id %}">followする</a>
-</p>
+{% if user != request.user %}
+    {% if is_followed %}
+    <p>
+    <a href="{% url 'accounts:unfollow' user.username %}">followをはずす</a>
+    </p>
+    {% else %}
+    <p>
+    <a href="{% url 'accounts:follow' user.username %}">followする</a>
+    </p>
+    {% endif %}
 {% endif %}
-<a href="{% url 'accounts:following_list' user.id %}">follow一覧</a>
-<a href="{% url 'accounts:follower_list' user.id %}">follower一覧</a>
+<a href="{% url 'accounts:following_list' user.username %}"> follow  {{followee_count}}</a>
+<a href="{% url 'accounts:follower_list' user.username %}"> follower  {{follower_count}}</a>
 <li>username:{{ user.username }}</li>
 <li>nickname:{{ user.nickname }}</li>
 <li>user.date_of_birth:{{ user.date_of_birth }}</li>

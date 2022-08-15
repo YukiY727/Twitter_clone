@@ -3,7 +3,7 @@
 <h2>フォロー一覧</h2>
 {% for follower in followers %}
     <li>
-        <a href="{% url 'accounts:user_page' follower.follower.id %}">{{ follower.follower }}</a>
+        <a href="{% url 'accounts:user_page' follower.follower %}">{{ follower.follower }}</a>
     </li>
 {% empty %}
     <li>フォローされているユーザはいません</li>

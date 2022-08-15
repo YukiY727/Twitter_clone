@@ -4,8 +4,7 @@
 {% for item in object_list %}
     {%if user.username != item.username %}
     <li>
-        <a href="{% url 'accounts:user_page' item.id %} ">{{ item.username }}</a>
-        
+        <a href="{% url 'accounts:user_page' item.username %} ">{{ item.username }}</a>
     <li>
     {%endif%}
 {% endfor %}
