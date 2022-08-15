@@ -17,18 +17,18 @@ urlpatterns = [
         name="login",
     ),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
-    path("<str:username>/user_page/", views.UserPage.as_view(), name="user_page"),
+    path("<int:user_id>/user_page/", views.UserPage.as_view(), name="user_page"),
     path(
-        "<str:user_id>/following_list/",
+        "<int:user_id>/following_list/",
         views.FollowingListView.as_view(),
         name="following_list",
     ),
     path(
-        "<str:user_id>/follower_list/",
+        "<int:user_id>/follower_list/",
         views.FollowerListView.as_view(),
         name="follower_list",
     ),
-    path("<str:user_id>/follow/", views.FollowView.as_view(), name="follow"),
+    path("<int:user_id>/follow/", views.FollowView.as_view(), name="follow"),
     path("userlist/", views.UserListView.as_view(), name="userlist"),
-    path("<str:user_id>/unfollow/", views.UnFollowView.as_view(), name="unfollow"),
+    path("<int:user_id>/unfollow/", views.UnFollowView.as_view(), name="unfollow"),
 ]

@@ -9,8 +9,8 @@
 <a href="{% url 'accounts:follow' user.id %}">followする</a>
 </p>
 {% endif %}
-<a href="{% url 'accounts:following_list' user.username %}">follow一覧</a>
-<a href="{% url 'accounts:follower_list' user.username %}">follower一覧</a>
+<a href="{% url 'accounts:following_list' user.id %}">follow一覧</a>
+<a href="{% url 'accounts:follower_list' user.id %}">follower一覧</a>
 <li>username:{{ user.username }}</li>
 <li>nickname:{{ user.nickname }}</li>
 <li>user.date_of_birth:{{ user.date_of_birth }}</li>

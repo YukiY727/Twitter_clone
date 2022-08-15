@@ -59,7 +59,8 @@ class UserPage(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_user = self.request.user
-        user = get_object_or_404(User, id=self.kwargs.get("username"))
+        print(self.kwargs ,1111111111111111111) 
+        user = get_object_or_404(User, id=self.kwargs.get("user_id"))
         post_item = Tweet.objects.filter(user=user)
         context["is_followed"] = FriendShip.objects.filter(follower=request_user, followee=user).exists()
         print(FriendShip.objects.filter(followee=request_user, follower=user).exists())
@@ -83,7 +84,9 @@ class FollowerListView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["followers"] = FriendShip.objects.filter(follower=self.kwargs.get("username"))
+        print(self.kwargs ,1111111111111111111)
+        print(FriendShip.objects.filter(follower_id=self.kwargs.get("user_id")))
+        ctx["followers"] = FriendShip.objects.filter(follower_id=self.kwargs.get("user_id"))
 
         return ctx
 # class UserFolloweeList(LoginRequiredMixin, TemplateView):
@@ -101,8 +104,10 @@ class FollowingListView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        print(FriendShip.objects.filter(followee=self.kwargs.get("username")))
-        ctx["followings"] = FriendShip.objects.filter(followee=self.kwargs.get("username"))
+        print(self.kwargs)
+        print(self.kwargs.get("user_id"))
+        print(FriendShip.objects.filter(followee=self.kwargs.get("user_id")))
+        ctx["followings"] = FriendShip.objects.filter(followee=self.kwargs.get("user_id"))
         return ctx
 class FollowView(LoginRequiredMixin, TemplateView):
     # template_name = "accounts/follow.html"
@@ -111,7 +116,7 @@ class FollowView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        self.follower = get_object_or_404(User, id=self.kwargs["user_id"])
+        self.follower = get_object_or_404(User, user=self.kwargs["user_id"])
         self.followee = get_object_or_404(User, id=self.request.user.id)
         context['follower'] = self.follower
         if self.followee == self.follower:
@@ -147,7 +152,7 @@ class UnFollowView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        self.follower = get_object_or_404(User, id=self.kwargs["user_id"])
+        self.follower = get_object_or_404(User, user=self.kwargs["user_id"])
         self.followee = get_object_or_404(User, id=self.request.user.id)
         context['follower'] = self.follower
         if self.followee == self.follower:
