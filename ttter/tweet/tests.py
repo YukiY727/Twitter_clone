@@ -95,7 +95,9 @@ class TestTweetDeleteView(TestCase):
         self.assertFalse(Tweet.objects.filter(content="かもがくるかも").exists())
 
     def test_failure_post_with_not_exist_tweet(self):
-        response = self.client.post(reverse("tweet:tweet_delete", kwargs={"pk": str(uuid.uuid4())}))
+        response = self.client.post(
+            reverse("tweet:tweet_delete", kwargs={"pk": str(uuid.uuid4())})
+        )
         self.assertEquals(response.status_code, 404)
         self.assertTrue(Tweet.objects.filter(content="かもがくるかも").exists())
 
@@ -106,6 +108,8 @@ class TestTweetDeleteView(TestCase):
 
         Tweet.objects.create(user=user, content="おーいお茶")
         tweet = Tweet.objects.get(content="おーいお茶")
-        response = self.client.post(reverse("tweet:tweet_delete", kwargs={"pk": tweet.pk}))
+        response = self.client.post(
+            reverse("tweet:tweet_delete", kwargs={"pk": tweet.pk})
+        )
         self.assertEquals(response.status_code, 403)
         self.assertTrue(Tweet.objects.filter(content="かもがくるかも").exists())

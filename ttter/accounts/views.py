@@ -143,10 +143,13 @@ class UnFollowView(LoginRequiredMixin, TemplateView):
     def post(self, *args, **kwargs):
         self.follower = get_object_or_404(User, username=self.kwargs["username"])
         self.followee = get_object_or_404(User, id=self.request.user.id)
+        print(self.followee)
+        if self.followee == self.follower:
+            messages.warning(self.request, "自分自身のフォロー解除はできません。")
         if FriendShip.objects.filter(
             followee=self.followee, follower=self.follower
         ).exists():
             FriendShip.objects.filter(
                 followee=self.followee, follower=self.follower
             ).delete()
-            return redirect("tweet:home")
+        return redirect("tweet:home")
