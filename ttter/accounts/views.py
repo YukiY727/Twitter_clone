@@ -53,7 +53,7 @@ class UserListView(LoginRequiredMixin, ListView):
     model = User
 
     def get_queryset(self):
-        return User.objects.all()
+        return User.objects.values_list('username', flat=True)
 
 
 class UserPage(LoginRequiredMixin, TemplateView):
