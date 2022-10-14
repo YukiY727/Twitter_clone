@@ -322,6 +322,9 @@ class TestFollowView(TestCase):
         self.assertFalse(FriendShip.objects.exists())
 
     def test_failure_post_with_self(self):
+        self.assertFalse(
+            FriendShip.objects.filter(followee=self.user1, follower=self.user1).exists()
+        )
         response = self.client.post(
             reverse("accounts:follow", kwargs={"username": self.user1.username})
         )
@@ -442,16 +445,14 @@ class TestFollowingListView(TestCase):
             response_before_follow.context["followings"],
             self.user.followees.all(),
         )
-        FriendShip.objects.create(follower=self.user, followee=self.follow_user)
+        FriendShip.objects.create(followee=self.user, follower=self.follow_user)
         response_after_follow = self.client.get(
             reverse("accounts:following_list", kwargs={"username": self.user.username})
         )
-        # self.assertQuerysetEqual(
-        #     response_after_follow.context["followings"],
-        #     self.user.followees.all(),
-        # )
-        print(dir(response_after_follow.context))
-        print(self.user.followees.all())
+        self.assertQuerysetEqual(
+            [follow.follower for follow in response_after_follow.context["followings"]],
+            self.user.followers.all(),
+        )
 
 
 class TestFollowerListView(TestCase):
