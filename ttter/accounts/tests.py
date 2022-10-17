@@ -450,7 +450,7 @@ class TestFollowingListView(TestCase):
             reverse("accounts:following_list", kwargs={"username": self.user.username})
         )
         self.assertQuerysetEqual(
-            [follow.follower for follow in response_after_follow.context["followings"]],
+            response_after_follow.context["followings"],
             self.user.followers.all(),
         )
 
@@ -461,12 +461,18 @@ class TestFollowerListView(TestCase):
             "username": "testuser",
             "email": "test@co.jp",
         }
+        data_follow = {
+            "username": "followuser",
+            "email": "follow@co.jp",
+        }
         self.user = User.objects.create_user(**data)
         self.client.force_login(self.user)
+        self.follow_user = User.objects.create_user(**data_follow)
+        self.client.force_login(self.follow_user)
 
     def test_success_get(self):
         response = self.client.get(
-            reverse("accounts:follower_list", kwargs={"username": self.user.username})
+            reverse("accounts:follower_list", kwargs={"username": self.follow_user.username})
         )
 
         self.assertEqual(response.status_code, 200)
@@ -474,4 +480,21 @@ class TestFollowerListView(TestCase):
         self.assertQuerysetEqual(
             response.context["followers"],
             self.user.followees.all(),
+        )
+
+    def test_success_get_follow_list(self):
+        response_before_follow = self.client.get(
+            reverse("accounts:following_list", kwargs={"username": self.follow_user.username})
+        )
+        self.assertQuerysetEqual(
+            response_before_follow.context["followings"],
+            self.user.followees.all(),
+        )
+        FriendShip.objects.create(followee=self.follow_user, follower=self.user)
+        response_after_follow = self.client.get(
+            reverse("accounts:follower_list", kwargs={"username": self.follow_user.username})
+        )
+        self.assertQuerysetEqual(
+            response_after_follow.context["followers"],
+            self.follow_user.followees.all(),
         )

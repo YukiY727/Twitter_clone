@@ -1,10 +1,7 @@
-from urllib import request
-
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, ListView, TemplateView
 from tweet.models import Tweet
@@ -53,7 +50,7 @@ class UserListView(LoginRequiredMixin, ListView):
     model = User
 
     def get_queryset(self):
-        return User.objects.values_list('username', flat=True)
+        return User.objects.values_list("username", flat=True)
 
 
 class UserPage(LoginRequiredMixin, TemplateView):
@@ -82,7 +79,7 @@ class FollowerListView(LoginRequiredMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         self.user = get_object_or_404(User, username=self.kwargs["username"])
 
-        ctx["followers"] = self.user.follower.all()
+        ctx["followers"] = [follower for follower in self.user.followees.all()]
 
         return ctx
 
@@ -93,7 +90,7 @@ class FollowingListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         self.user = get_object_or_404(User, username=self.kwargs["username"])
-        ctx["followings"] = self.user.followee.all()
+        ctx["followings"] = [follower for follower in self.user.followers.all()]
         return ctx
 
 
@@ -143,7 +140,6 @@ class UnFollowView(LoginRequiredMixin, TemplateView):
     def post(self, *args, **kwargs):
         self.follower = get_object_or_404(User, username=self.kwargs["username"])
         self.followee = get_object_or_404(User, id=self.request.user.id)
-        print(self.followee)
         if self.followee == self.follower:
             messages.warning(self.request, "自分自身のフォロー解除はできません。")
         if FriendShip.objects.filter(
