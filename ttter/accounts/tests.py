@@ -370,6 +370,7 @@ class TestUnfollowView(TestCase):
         self.assertTemplateUsed(response, "accounts/unfollow.html")
 
     def test_success_post(self):
+        self.assertTrue(FriendShip.objects.filter(followee=self.user1, follower=self.user2))
         response = self.client.post(
             reverse("accounts:unfollow", kwargs={"username": self.user2.username})
         )
@@ -382,7 +383,10 @@ class TestUnfollowView(TestCase):
         )
         self.assertFalse(FriendShip.objects.exists())
 
-    def test_failure_post_with_not_exist_tweet(self):
+    def test_failure_post_with_not_exist_user(self):
+        self.assertTrue(
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
+        )
         response = self.client.post(
             reverse("accounts:unfollow", kwargs={"username": "test"})
         )
@@ -393,6 +397,9 @@ class TestUnfollowView(TestCase):
         )
 
     def test_failure_post_with_incorrect_user(self):
+        self.assertTrue(
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
+        )
         response = self.client.post(
             reverse("accounts:unfollow", kwargs={"username": self.user1})
         )
