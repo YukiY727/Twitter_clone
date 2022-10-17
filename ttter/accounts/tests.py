@@ -358,7 +358,7 @@ class TestUnfollowView(TestCase):
         }
         self.user1 = User.objects.create_user(**data1)
         self.user2 = User.objects.create_user(**data2)
-        FriendShip.objects.create(follower=self.user1, followee=self.user2)
+        FriendShip.objects.create(followee=self.user1, follower=self.user2)
         self.client.force_login(self.user1)
 
     def test_success_get(self):
@@ -380,7 +380,7 @@ class TestUnfollowView(TestCase):
             status_code=302,
             target_status_code=200,
         )
-        self.assertTrue(FriendShip.objects.exists())
+        self.assertFalse(FriendShip.objects.exists())
 
     def test_failure_post_with_not_exist_tweet(self):
         response = self.client.post(
@@ -389,7 +389,7 @@ class TestUnfollowView(TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertTrue(
-            FriendShip.objects.filter(follower=self.user1, followee=self.user2).exists()
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
         )
 
     def test_failure_post_with_incorrect_user(self):
@@ -403,7 +403,7 @@ class TestUnfollowView(TestCase):
             target_status_code=200,
         )
         self.assertTrue(
-            FriendShip.objects.filter(follower=self.user1, followee=self.user2).exists()
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
         )
         self.assertIn(
             "自分自身のフォロー解除はできません。", list(get_messages(response.wsgi_request))[0].message
