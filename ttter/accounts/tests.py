@@ -442,7 +442,7 @@ class TestFollowingListView(TestCase):
             self.user.followees.all(),
         )
 
-    def test_success_get_follow_list(self):
+    def test_success_get_following_list(self):
         response_before_follow = self.client.get(
             reverse("accounts:following_list", kwargs={"username": self.user.username})
         )
@@ -487,7 +487,7 @@ class TestFollowerListView(TestCase):
             self.user.followees.all(),
         )
 
-    def test_success_get_follow_list(self):
+    def test_success_get_follower_list(self):
         response_before_follow = self.client.get(
             reverse("accounts:following_list", kwargs={"username": self.follow_user.username})
         )
