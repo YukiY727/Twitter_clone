@@ -1,5 +1,3 @@
-from urllib import response
-
 from django.contrib.auth import SESSION_KEY, get_user_model
 from django.contrib.messages import get_messages
 from django.test import TestCase
