@@ -79,9 +79,12 @@ class FollowerListView(LoginRequiredMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         self.user = get_object_or_404(User, username=self.kwargs["username"])
 
-        ctx["followers"] = [follower for follower in self.user.followees.all()] #うまくいかない
-        # ctx["followers"] = [follower for follower in self.user.all().prefetch_related("followees")] #うまくいかない
-
+        ctx["followers"] = [
+            follower.followee
+            for follower in FriendShip.objects.select_related("follower").filter(
+                follower=self.user
+            )
+        ]
         return ctx
 
 
@@ -91,8 +94,12 @@ class FollowingListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         self.user = get_object_or_404(User, username=self.kwargs["username"])
-        ctx["followings"] = [follower for follower in self.user.followers.all()] #うまくいかない
-        # ctx["followings"] = [follower for follower in self.user.all().prefetch_related("followers")] #うまくいかない
+        ctx["followings"] = [
+            follower.follower
+            for follower in FriendShip.objects.select_related("followee").filter(
+                followee=self.user
+            )
+        ]
         return ctx
 
 
@@ -119,7 +126,9 @@ class FollowView(LoginRequiredMixin, TemplateView):
         if self.followee == self.follower:
             messages.warning(self.request, "自分自身はフォローできません。")
         else:
-            FriendShip.objects.get_or_create(followee=self.followee, follower=self.follower)
+            FriendShip.objects.get_or_create(
+                followee=self.followee, follower=self.follower
+            )
         # if FriendShip.objects.filter(
         #     followee=self.followee, follower=self.follower
         # ).exists():

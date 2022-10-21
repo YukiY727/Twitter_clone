@@ -368,7 +368,9 @@ class TestUnfollowView(TestCase):
         self.assertTemplateUsed(response, "accounts/unfollow.html")
 
     def test_success_post(self):
-        self.assertTrue(FriendShip.objects.filter(followee=self.user1, follower=self.user2))
+        self.assertTrue(
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2)
+        )
         response = self.client.post(
             reverse("accounts:unfollow", kwargs={"username": self.user2.username})
         )
@@ -448,7 +450,12 @@ class TestFollowingListView(TestCase):
         )
         self.assertQuerysetEqual(
             response_before_follow.context["followings"],
-            self.user.followees.all(),
+            [
+                follower.follower
+                for follower in FriendShip.objects.select_related("followee").filter(
+                    followee=self.user
+                )
+            ],
         )
         FriendShip.objects.create(followee=self.user, follower=self.follow_user)
         response_after_follow = self.client.get(
@@ -456,7 +463,12 @@ class TestFollowingListView(TestCase):
         )
         self.assertQuerysetEqual(
             response_after_follow.context["followings"],
-            self.user.followers.all(),
+            [
+                follower.follower
+                for follower in FriendShip.objects.select_related("followee").filter(
+                    followee=self.user
+                )
+            ],
         )
 
 
@@ -477,7 +489,9 @@ class TestFollowerListView(TestCase):
 
     def test_success_get(self):
         response = self.client.get(
-            reverse("accounts:follower_list", kwargs={"username": self.follow_user.username})
+            reverse(
+                "accounts:follower_list", kwargs={"username": self.follow_user.username}
+            )
         )
 
         self.assertEqual(response.status_code, 200)
@@ -489,17 +503,32 @@ class TestFollowerListView(TestCase):
 
     def test_success_get_follower_list(self):
         response_before_follow = self.client.get(
-            reverse("accounts:following_list", kwargs={"username": self.follow_user.username})
+            reverse(
+                "accounts:following_list",
+                kwargs={"username": self.follow_user.username},
+            )
         )
         self.assertQuerysetEqual(
             response_before_follow.context["followings"],
-            self.user.followees.all(),
-        )
+            [
+                follower.followee
+                for follower in FriendShip.objects.select_related("follower").filter(
+                    follower=self.user
+                )
+            ],
+        ),
         FriendShip.objects.create(followee=self.follow_user, follower=self.user)
         response_after_follow = self.client.get(
-            reverse("accounts:follower_list", kwargs={"username": self.follow_user.username})
+            reverse(
+                "accounts:follower_list", kwargs={"username": self.user.username}
+            )
         )
         self.assertQuerysetEqual(
             response_after_follow.context["followers"],
-            self.follow_user.followees.all(),
+            [
+                follower.followee
+                for follower in FriendShip.objects.select_related("follower").filter(
+                    follower=self.user
+                )
+            ],
         )
