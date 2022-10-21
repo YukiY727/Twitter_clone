@@ -126,7 +126,7 @@ class FollowView(LoginRequiredMixin, TemplateView):
         if self.followee == self.follower:
             messages.warning(self.request, "自分自身はフォローできません。")
         else:
-            obj, created = FriendShip.objects.get_or_create(
+            _, created = FriendShip.objects.get_or_create(
                 followee=self.followee, follower=self.follower
             )
             if not created:
