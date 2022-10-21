@@ -340,6 +340,37 @@ class TestFollowView(TestCase):
         self.assertFalse(
             FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
         )
+    def test_double_follow(self):
+        self.assertFalse(
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
+        )
+        response = self.client.post(
+            reverse("accounts:follow", kwargs={"username": self.user2.username})
+        )
+        self.assertRedirects(
+            response,
+            reverse("tweet:home"),
+            status_code=302,
+            target_status_code=200,
+        )
+        self.assertTrue(
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
+        )
+        response = self.client.post(
+            reverse("accounts:follow", kwargs={"username": self.user2.username})
+        )
+        self.assertRedirects(
+            response,
+            reverse("tweet:home"),
+            status_code=302,
+            target_status_code=200,
+        )
+        self.assertTrue(
+            FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
+        )
+        self.assertEqual(
+            f"{self.user2.username}さんはすでにフォローしています。", list(get_messages(response.wsgi_request))[0].message
+        )
 
 
 class TestUnfollowView(TestCase):
