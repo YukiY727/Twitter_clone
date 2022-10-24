@@ -121,16 +121,16 @@ class FollowView(LoginRequiredMixin, TemplateView):
         return context
 
     def post(self, *args, **kwargs):
-        self.follower = get_object_or_404(User, username=self.kwargs["username"])
-        self.followee = get_object_or_404(User, id=self.request.user.id)
-        if self.followee == self.follower:
+        follower = get_object_or_404(User, username=self.kwargs["username"])
+        followee = get_object_or_404(User, id=self.request.user.id)
+        if followee == follower:
             messages.warning(self.request, "自分自身はフォローできません。")
         else:
             _, created = FriendShip.objects.get_or_create(
-                followee=self.followee, follower=self.follower
+                followee=followee, follower=follower
             )
             if not created:
-                messages.warning(self.request, f"{self.follower.username}さんはすでにフォローしています。")
+                messages.warning(self.request, f"{follower.username}さんはすでにフォローしています。")
         return redirect("tweet:home")
 
 
