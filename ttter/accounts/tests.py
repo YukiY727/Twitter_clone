@@ -340,6 +340,7 @@ class TestFollowView(TestCase):
         self.assertFalse(
             FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
         )
+
     def test_double_follow(self):
         self.assertFalse(
             FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
@@ -369,7 +370,8 @@ class TestFollowView(TestCase):
             FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
         )
         self.assertEqual(
-            f"{self.user2.username}さんはすでにフォローしています。", list(get_messages(response.wsgi_request))[0].message
+            f"{self.user2.username}さんはすでにフォローしています。",
+            list(get_messages(response.wsgi_request))[0].message,
         )
 
 
@@ -459,9 +461,8 @@ class TestFollowingListView(TestCase):
             "email": "follow@co.jp",
         }
         self.user = User.objects.create_user(**data)
-        self.client.force_login(self.user)
         self.follow_user = User.objects.create_user(**data_follow)
-        self.client.force_login(self.follow_user)
+        self.client.force_login(self.user)
 
     def test_success_get(self):
         response = self.client.get(
@@ -550,9 +551,7 @@ class TestFollowerListView(TestCase):
         ),
         FriendShip.objects.create(followee=self.follow_user, follower=self.user)
         response_after_follow = self.client.get(
-            reverse(
-                "accounts:follower_list", kwargs={"username": self.user.username}
-            )
+            reverse("accounts:follower_list", kwargs={"username": self.user.username})
         )
         self.assertQuerysetEqual(
             response_after_follow.context["followers"],

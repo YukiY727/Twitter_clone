@@ -76,13 +76,7 @@ class FollowerListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         user = get_object_or_404(User, username=self.kwargs["username"])
-
-        ctx["followers"] = [
-            follower.followee
-            for follower in FriendShip.objects.select_related("follower").filter(
-                follower=user
-            )
-        ]
+        ctx["followers"] = user.followees.all()
         return ctx
 
 
@@ -92,31 +86,13 @@ class FollowingListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         user = get_object_or_404(User, username=self.kwargs["username"])
-        ctx["followings"] = [
-            follower.follower
-            for follower in FriendShip.objects.select_related("followee").filter(
-                followee=user
-            )
-        ]
+        ctx["followings"] = user.followers.all()
         return ctx
 
 
 class FollowView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/follow.html"
     model = FriendShip
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        follower = get_object_or_404(User, username=self.kwargs["username"])
-        followee = get_object_or_404(User, id=self.request.user.id)
-        context["follower"] = follower
-        if followee == follower:
-            messages.warning(self.request, "自分自身はフォローできません。")
-        elif FriendShip.objects.filter(
-            followee=followee, follower=follower
-        ).exists():
-            messages.warning(self.request, f"{follower.username}さんはすでにフォローしています。")
-        return context
 
     def post(self, *args, **kwargs):
         follower = get_object_or_404(User, username=self.kwargs["username"])
@@ -135,26 +111,13 @@ class FollowView(LoginRequiredMixin, TemplateView):
 class UnFollowView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/unfollow.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        follower = get_object_or_404(User, username=self.kwargs["username"])
-        followee = get_object_or_404(User, id=self.request.user.id)
-        context["follower"] = follower
-        if followee == follower:
-            messages.warning(self.request, "無効な操作です。")
-        return context
-
     def post(self, *args, **kwargs):
         follower = get_object_or_404(User, username=self.kwargs["username"])
         followee = get_object_or_404(User, id=self.request.user.id)
         if followee == follower:
             messages.warning(self.request, "自分自身のフォロー解除はできません。")
-        if FriendShip.objects.filter(
-            followee=followee, follower=follower
-        ).exists():
-            FriendShip.objects.filter(
-                followee=followee, follower=follower
-            ).delete()
+        if FriendShip.objects.filter(followee=followee, follower=follower).exists():
+            FriendShip.objects.filter(followee=followee, follower=follower).delete()
         else:
             messages.warning(self.request, f"{follower.username}さんはフォローしていません。")
         return redirect("tweet:home")
