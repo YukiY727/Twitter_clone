@@ -48,9 +48,7 @@ class UserDataCreate(CreateView):
 class UserListView(LoginRequiredMixin, ListView):
     template_name = "accounts/user_list.html"
     model = User
-
-    def get_queryset(self):
-        return User.objects.values_list("username", flat=True)
+    queryset = User.objects.values_list("username", flat=True)
 
 
 class UserPage(LoginRequiredMixin, TemplateView):
