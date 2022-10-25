@@ -58,13 +58,12 @@ class UserPage(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         request_user = self.request.user
         user = get_object_or_404(User, username=self.kwargs.get("username"))
-        post_item = user.tweet_set.all()
         if request_user != user:
             context["is_followed"] = FriendShip.objects.filter(
                 followee=request_user, follower=user
             ).exists()
         context["user"] = user
-        context["post_item"] = post_item
+        context["post_item"] = user.tweet_set.all()
         context["followee_count"] = user.followee.count()
         context["follower_count"] = user.follower.count()
         return context
