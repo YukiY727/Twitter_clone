@@ -93,6 +93,11 @@ class FollowView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/follow.html"
     model = FriendShip
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["follower"] = get_object_or_404(User, username=self.kwargs["username"])
+        return ctx
+
     def post(self, *args, **kwargs):
         follower = get_object_or_404(User, username=self.kwargs["username"])
         followee = get_object_or_404(User, id=self.request.user.id)
@@ -109,6 +114,11 @@ class FollowView(LoginRequiredMixin, TemplateView):
 
 class UnFollowView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/unfollow.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["follower"] = get_object_or_404(User, username=self.kwargs["username"])
+        return ctx
 
     def post(self, *args, **kwargs):
         follower = get_object_or_404(User, username=self.kwargs["username"])
