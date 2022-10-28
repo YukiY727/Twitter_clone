@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "base",
-    "tweet"
+    "tweet",
 ]
 
 MIDDLEWARE = [
@@ -133,3 +133,14 @@ AUTH_USER_MODEL = "accounts.MyUser"
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "tweet:home"
 LOGOUT_REDIRECT_URL = "base:top"
+
+if DEBUG:
+
+    def show_toolbar(request):
+        return True
+
+    INSTALLED_APPS += ("debug_toolbar",)
+    MIDDLEWARE += ("debug_toolbar.middleware.DebugToolbarMiddleware",)
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+    }

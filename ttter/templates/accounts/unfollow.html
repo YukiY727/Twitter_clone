@@ -1,0 +1,15 @@
+{% extends "base/top.html" %}
+{% block content %}
+<h2>フォローの解除の確認</h2>
+{% if messages %}
+{% for message in messages %}
+    <li>{{ message.tags }}:{{ message }}</li>
+    {% endfor %}
+{% else %}
+    <h3>{{ follower.username }}のフォローを外しますか？</h3>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="フォローを外す" class="btn" />
+    </form>
+{% endif %}
+{% endblock %}

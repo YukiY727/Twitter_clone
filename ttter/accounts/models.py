@@ -61,6 +61,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
+    followees = models.ManyToManyField(
+        'MyUser', verbose_name='フォロー中のユーザー', through='FriendShip',
+        related_name='+', through_fields=('follower', 'followee')
+    )
+    followers = models.ManyToManyField(
+        'MyUser', verbose_name='フォローされているユーザー', through='FriendShip', 
+        related_name='+', through_fields=('followee', 'follower')
+    )
     # AbstractBaseUserにはMyUserManagerが必要
     objects = MyUserManager()
     # 一意の識別子として使用されます
@@ -70,3 +78,19 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class FriendShip(models.Model):
+    followee = models.ForeignKey(
+        MyUser, related_name="followee", on_delete=models.CASCADE
+    )
+    follower = models.ForeignKey(
+        MyUser, related_name="follower", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["followee", "follower"], name="follow_unique"
+            ),
+        ]

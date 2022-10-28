@@ -19,6 +19,7 @@ class TweetCreateView(LoginRequiredMixin, CreateView):
 class TweetListView(LoginRequiredMixin, ListView):
     template_name = "tweet/tweet_list.html"
     model = Tweet
+    queryset = Tweet.objects.select_related('user').all().order_by("-created_at")
 
 
 class TweetDetailView(LoginRequiredMixin, DetailView):

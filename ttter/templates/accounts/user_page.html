@@ -1,0 +1,33 @@
+{% extends 'base/top.html' %}
+{% block content %}
+{% if user != request.user %}
+    {% if is_followed %}
+    <p>
+    <a href="{% url 'accounts:unfollow' user.username %}">followをはずす</a>
+    </p>
+    {% else %}
+    <p>
+    <a href="{% url 'accounts:follow' user.username %}">followする</a>
+    </p>
+    {% endif %}
+{% endif %}
+<a href="{% url 'accounts:following_list' user.username %}"> follow  {{followee_count}}</a>
+<a href="{% url 'accounts:follower_list' user.username %}"> follower  {{follower_count}}</a>
+<li>username:{{ user.username }}</li>
+<li>nickname:{{ user.nickname }}</li>
+<li>user.date_of_birth:{{ user.date_of_birth }}</li>
+{% for tweet in post_item %}
+<p>
+<div class="frame_tweet">
+    <p>
+        <p>{{ tweet.user }}</p>
+        <p>{{ tweet.created_at }}</p>
+        <a href="{% url 'tweet:tweet_detail' tweet.pk %}">{{ tweet.content }}</a>
+        {% if user == tweet.user %}
+        <p><a href="{% url 'tweet:tweet_delete' tweet.pk %}">削除</a></p>
+        {% endif %}
+    </p>
+</div>
+</p>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base/top.html" %}
+{% block content %}
+<h2>フォロー一覧</h2>
+{% for follow in followings %}
+    <li>
+        <a href="{% url 'accounts:user_page' follow %}">{{ follow }}</a>
+    </li>
+{% empty %}
+    <li>フォローしているユーザはいません</li>
+{% endfor %}
+{% endblock %}
