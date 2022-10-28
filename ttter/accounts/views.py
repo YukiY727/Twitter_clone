@@ -91,7 +91,6 @@ class FollowingListView(LoginRequiredMixin, TemplateView):
 
 class FollowView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/follow.html"
-    model = FriendShip
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
