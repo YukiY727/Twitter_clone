@@ -327,12 +327,8 @@ class TestFollowView(TestCase):
             reverse("accounts:follow", kwargs={"username": self.user1.username})
         )
 
-        self.assertRedirects(
-            response,
-            reverse("tweet:home"),
-            status_code=302,
-            target_status_code=200,
-        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/follow.html")
         self.assertFalse(FriendShip.objects.exists())
         self.assertEqual(
             "自分自身はフォローできません。", list(get_messages(response.wsgi_request))[0].message
@@ -360,12 +356,8 @@ class TestFollowView(TestCase):
         response = self.client.post(
             reverse("accounts:follow", kwargs={"username": self.user2.username})
         )
-        self.assertRedirects(
-            response,
-            reverse("tweet:home"),
-            status_code=302,
-            target_status_code=200,
-        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/follow.html")
         self.assertTrue(
             FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
         )
@@ -436,12 +428,8 @@ class TestUnfollowView(TestCase):
         response = self.client.post(
             reverse("accounts:unfollow", kwargs={"username": self.user1})
         )
-        self.assertRedirects(
-            response,
-            reverse("tweet:home"),
-            status_code=302,
-            target_status_code=200,
-        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/unfollow.html")
         self.assertTrue(
             FriendShip.objects.filter(followee=self.user1, follower=self.user2).exists()
         )
