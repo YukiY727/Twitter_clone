@@ -109,7 +109,9 @@ class FollowView(LoginRequiredMixin, TemplateView):
             )
             if not created:
                 messages.warning(self.request, f"{follower.username}さんはすでにフォローしています。")
-                return render(self.request, "accounts/follow.html", {"follower": follower})
+                return render(
+                    self.request, "accounts/follow.html", {"follower": follower}
+                )
         return redirect("tweet:home")
 
 
@@ -126,10 +128,14 @@ class UnFollowView(LoginRequiredMixin, TemplateView):
         followee = get_object_or_404(User, id=self.request.user.id)
         if followee == follower:
             messages.warning(self.request, "自分自身のフォロー解除はできません。")
-            return render(self.request, "accounts/unfollow.html", {"follower": follower})
+            return render(
+                self.request, "accounts/unfollow.html", {"follower": follower}
+            )
         if FriendShip.objects.filter(followee=followee, follower=follower).exists():
             FriendShip.objects.filter(followee=followee, follower=follower).delete()
         else:
             messages.warning(self.request, f"{follower.username}さんはフォローしていません。")
-            return render(self.request, "accounts/unfollow.html", {"follower": follower})
+            return render(
+                self.request, "accounts/unfollow.html", {"follower": follower}
+            )
         return redirect("tweet:home")
