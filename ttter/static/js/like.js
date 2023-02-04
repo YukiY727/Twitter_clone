@@ -10,9 +10,8 @@ const getCookie = (name) => {
 };
 const csrftoken = getCookie('csrftoken');
 
-const LikeAction = async (tweet_id) => {
-    const tweet_element =  document.getElementById(tweet_id);
-    const url = tweet_element.dataset.url;
+const LikeAction = async (tweet) => {
+    const url = tweet.dataset.url;
     const data = {
         method: "POST",
         headers: {
@@ -22,7 +21,7 @@ const LikeAction = async (tweet_id) => {
     }
     const response = await fetch(url, data);
     const tweet_data = await response.json();
-    changeStyle(tweet_data, tweet_element);
+    changeStyle(tweet_data, tweet);
 }
 
 const changeStyle = (tweet_data, selector) => {
