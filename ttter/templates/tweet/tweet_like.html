@@ -3,4 +3,4 @@
 {% else %}
 <button id="tweet_{{tweet.id}}" onclick="LikeAction(this)" data-url="{% url 'tweet:like' tweet.id %}">いいね</button>
 {% endif %}
-<span name="count_{{tweet.id}}" class="count">{{ tweet.liked_count }}</span>
+<span name="count_{{tweet.id}}" class="count">{{ tweet.likefortweet_set.conut }}</span>
