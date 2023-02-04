@@ -44,7 +44,7 @@ class LikeView(View, LoginRequiredMixin):
         user = request.user
         tweet = get_object_or_404(Tweet, pk=kwargs["pk"])
         LikeForTweet.objects.get_or_create(user=user, tweet=tweet)
-        likes_count = tweet.likes.count()
+        likes_count = tweet.likefortweet_set.count()
         context = {
             "liked_count": likes_count,
             "tweet_id": tweet.id,
@@ -59,8 +59,9 @@ class UnlikeView(LoginRequiredMixin, View):
         user = request.user
         tweet = get_object_or_404(Tweet, pk=kwargs["pk"])
         LikeForTweet.objects.filter(user=user, tweet=tweet).delete()
+        likes_count = tweet.likefortweet_set.count()
         context = {
-            "liked_count": tweet.likes.count(),
+            "liked_count": likes_count,
             "tweet_id": tweet.id,
             "is_liked": False,
         }
