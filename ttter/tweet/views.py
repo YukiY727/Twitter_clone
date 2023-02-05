@@ -21,7 +21,13 @@ class TweetCreateView(LoginRequiredMixin, CreateView):
 class TweetListView(LoginRequiredMixin, ListView):
     template_name = "tweet/tweet_list.html"
     model = Tweet
-    queryset = Tweet.objects.select_related("user").all().order_by("-created_at")
+    queryset = Tweet.objects.select_related("user").prefetch_related("likefortweet_set").all().order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context["liked_tweet"] = user.likefortweet_set.values_list("tweet", flat=True)
+        return context
 
 
 class TweetDetailView(LoginRequiredMixin, DetailView):
